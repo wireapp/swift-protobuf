@@ -236,6 +236,21 @@ extension ProtobufUnittest_Extend_Msg1 {
   mutating func clearProtobufUnittest_Extend_aB() {
     clearExtensionValue(ext: ProtobufUnittest_Extend_Extensions_a_b)
   }
+
+  var ProtobufUnittest_Extend_m2: ProtobufUnittest_Extend_Msg2 {
+    get {return getExtensionValue(ext: ProtobufUnittest_Extend_Extensions_m2) ?? ProtobufUnittest_Extend_Msg2()}
+    set {setExtensionValue(ext: ProtobufUnittest_Extend_Extensions_m2, value: newValue)}
+  }
+  /// Returns true if extension `ProtobufUnittest_Extend_Extensions_m2`
+  /// has been explicitly set.
+  var hasProtobufUnittest_Extend_m2: Bool {
+    return hasExtensionValue(ext: ProtobufUnittest_Extend_Extensions_m2)
+  }
+  /// Clears the value of extension `ProtobufUnittest_Extend_Extensions_m2`.
+  /// Subsequent reads from it will return its default value.
+  mutating func clearProtobufUnittest_Extend_m2() {
+    clearExtensionValue(ext: ProtobufUnittest_Extend_Extensions_m2)
+  }
 }
 
 extension ProtobufUnittest_Extend_Msg2 {
@@ -333,6 +348,7 @@ let ProtobufUnittest_Extend_UnittestSwiftExtension_Extensions: SwiftProtobuf.Sim
   ProtobufUnittest_Extend_Extensions_b,
   ProtobufUnittest_Extend_Extensions_C,
   ProtobufUnittest_Extend_Extensions_a_b,
+  ProtobufUnittest_Extend_Extensions_m2,
   ProtobufUnittest_Extend_Extensions_aB,
   ProtobufUnittest_Extend_Extensions_ext_a,
   ProtobufUnittest_Extend_Extensions_ext_b,
@@ -357,6 +373,11 @@ let ProtobufUnittest_Extend_Extensions_C = SwiftProtobuf.MessageExtension<SwiftP
 let ProtobufUnittest_Extend_Extensions_a_b = SwiftProtobuf.MessageExtension<SwiftProtobuf.OptionalExtensionField<SwiftProtobuf.ProtobufInt32>, ProtobufUnittest_Extend_Msg1>(
   _protobuf_fieldNumber: 1,
   fieldName: "protobuf_unittest.extend.a_b"
+)
+
+let ProtobufUnittest_Extend_Extensions_m2 = SwiftProtobuf.MessageExtension<SwiftProtobuf.OptionalMessageExtensionField<ProtobufUnittest_Extend_Msg2>, ProtobufUnittest_Extend_Msg1>(
+  _protobuf_fieldNumber: 2,
+  fieldName: "protobuf_unittest.extend.m2"
 )
 
 let ProtobufUnittest_Extend_Extensions_aB = SwiftProtobuf.MessageExtension<SwiftProtobuf.OptionalExtensionField<SwiftProtobuf.ProtobufInt32>, ProtobufUnittest_Extend_Msg2>(
@@ -439,10 +460,13 @@ extension ProtobufUnittest_Extend_Foo.Bar.Baz: SwiftProtobuf.Message, SwiftProto
 
   mutating func decodeMessage<D: SwiftProtobuf.Decoder>(decoder: inout D) throws {
     while let fieldNumber = try decoder.nextFieldNumber() {
+      // The use of inline closures is to circumvent an issue where the compiler
+      // allocates stack space for every case branch when no optimizations are
+      // enabled. https://github.com/apple/swift-protobuf/issues/1034
       switch fieldNumber {
-      case 1: try decoder.decodeSingularInt32Field(value: &self._a)
+      case 1: try { try decoder.decodeSingularInt32Field(value: &self._a) }()
       case 100..<1001:
-        try decoder.decodeExtensionField(values: &_protobuf_extensionFieldValues, messageType: ProtobufUnittest_Extend_Foo.Bar.Baz.self, fieldNumber: fieldNumber)
+        try { try decoder.decodeExtensionField(values: &_protobuf_extensionFieldValues, messageType: ProtobufUnittest_Extend_Foo.Bar.Baz.self, fieldNumber: fieldNumber) }()
       default: break
       }
     }
@@ -472,8 +496,11 @@ extension ProtobufUnittest_Extend_C: SwiftProtobuf.Message, SwiftProtobuf._Messa
 
   mutating func decodeMessage<D: SwiftProtobuf.Decoder>(decoder: inout D) throws {
     while let fieldNumber = try decoder.nextFieldNumber() {
+      // The use of inline closures is to circumvent an issue where the compiler
+      // allocates stack space for every case branch when no optimizations are
+      // enabled. https://github.com/apple/swift-protobuf/issues/1034
       switch fieldNumber {
-      case 999: try decoder.decodeSingularInt64Field(value: &self._c)
+      case 999: try { try decoder.decodeSingularInt64Field(value: &self._c) }()
       default: break
       }
     }
@@ -564,10 +591,13 @@ extension ProtobufUnittest_Extend_MsgNoStorage: SwiftProtobuf.Message, SwiftProt
 
   mutating func decodeMessage<D: SwiftProtobuf.Decoder>(decoder: inout D) throws {
     while let fieldNumber = try decoder.nextFieldNumber() {
+      // The use of inline closures is to circumvent an issue where the compiler
+      // allocates stack space for every case branch when no optimizations are
+      // enabled. https://github.com/apple/swift-protobuf/issues/1034
       switch fieldNumber {
-      case 1: try decoder.decodeSingularInt32Field(value: &self._x)
+      case 1: try { try decoder.decodeSingularInt32Field(value: &self._x) }()
       case 100..<201:
-        try decoder.decodeExtensionField(values: &_protobuf_extensionFieldValues, messageType: ProtobufUnittest_Extend_MsgNoStorage.self, fieldNumber: fieldNumber)
+        try { try decoder.decodeExtensionField(values: &_protobuf_extensionFieldValues, messageType: ProtobufUnittest_Extend_MsgNoStorage.self, fieldNumber: fieldNumber) }()
       default: break
       }
     }
@@ -629,11 +659,14 @@ extension ProtobufUnittest_Extend_MsgUsesStorage: SwiftProtobuf.Message, SwiftPr
     _ = _uniqueStorage()
     try withExtendedLifetime(_storage) { (_storage: _StorageClass) in
       while let fieldNumber = try decoder.nextFieldNumber() {
+        // The use of inline closures is to circumvent an issue where the compiler
+        // allocates stack space for every case branch when no optimizations are
+        // enabled. https://github.com/apple/swift-protobuf/issues/1034
         switch fieldNumber {
-        case 1: try decoder.decodeSingularInt32Field(value: &_storage._x)
-        case 2: try decoder.decodeSingularMessageField(value: &_storage._y)
+        case 1: try { try decoder.decodeSingularInt32Field(value: &_storage._x) }()
+        case 2: try { try decoder.decodeSingularMessageField(value: &_storage._y) }()
         case 100..<201:
-          try decoder.decodeExtensionField(values: &_protobuf_extensionFieldValues, messageType: ProtobufUnittest_Extend_MsgUsesStorage.self, fieldNumber: fieldNumber)
+          try { try decoder.decodeExtensionField(values: &_protobuf_extensionFieldValues, messageType: ProtobufUnittest_Extend_MsgUsesStorage.self, fieldNumber: fieldNumber) }()
         default: break
         }
       }

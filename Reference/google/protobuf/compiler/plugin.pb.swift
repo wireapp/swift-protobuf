@@ -198,9 +198,47 @@ struct Google_Protobuf_Compiler_CodeGeneratorResponse {
   /// Clears the value of `error`. Subsequent reads from it will return its default value.
   mutating func clearError() {self._error = nil}
 
+  /// A bitmask of supported features that the code generator supports.
+  /// This is a bitwise "or" of values from the Feature enum.
+  var supportedFeatures: UInt64 {
+    get {return _supportedFeatures ?? 0}
+    set {_supportedFeatures = newValue}
+  }
+  /// Returns true if `supportedFeatures` has been explicitly set.
+  var hasSupportedFeatures: Bool {return self._supportedFeatures != nil}
+  /// Clears the value of `supportedFeatures`. Subsequent reads from it will return its default value.
+  mutating func clearSupportedFeatures() {self._supportedFeatures = nil}
+
   var file: [Google_Protobuf_Compiler_CodeGeneratorResponse.File] = []
 
   var unknownFields = SwiftProtobuf.UnknownStorage()
+
+  /// Sync with code_generator.h.
+  enum Feature: SwiftProtobuf.Enum {
+    typealias RawValue = Int
+    case none // = 0
+    case proto3Optional // = 1
+
+    init() {
+      self = .none
+    }
+
+    init?(rawValue: Int) {
+      switch rawValue {
+      case 0: self = .none
+      case 1: self = .proto3Optional
+      default: return nil
+      }
+    }
+
+    var rawValue: Int {
+      switch self {
+      case .none: return 0
+      case .proto3Optional: return 1
+      }
+    }
+
+  }
 
   /// Represents a single generated file.
   struct File {
@@ -284,6 +322,18 @@ struct Google_Protobuf_Compiler_CodeGeneratorResponse {
     /// Clears the value of `content`. Subsequent reads from it will return its default value.
     mutating func clearContent() {self._content = nil}
 
+    /// Information describing the file content being inserted. If an insertion
+    /// point is used, this information will be appropriately offset and inserted
+    /// into the code generation metadata for the generated files.
+    var generatedCodeInfo: SwiftProtobuf.Google_Protobuf_GeneratedCodeInfo {
+      get {return _generatedCodeInfo ?? SwiftProtobuf.Google_Protobuf_GeneratedCodeInfo()}
+      set {_generatedCodeInfo = newValue}
+    }
+    /// Returns true if `generatedCodeInfo` has been explicitly set.
+    var hasGeneratedCodeInfo: Bool {return self._generatedCodeInfo != nil}
+    /// Clears the value of `generatedCodeInfo`. Subsequent reads from it will return its default value.
+    mutating func clearGeneratedCodeInfo() {self._generatedCodeInfo = nil}
+
     var unknownFields = SwiftProtobuf.UnknownStorage()
 
     init() {}
@@ -291,12 +341,22 @@ struct Google_Protobuf_Compiler_CodeGeneratorResponse {
     fileprivate var _name: String? = nil
     fileprivate var _insertionPoint: String? = nil
     fileprivate var _content: String? = nil
+    fileprivate var _generatedCodeInfo: SwiftProtobuf.Google_Protobuf_GeneratedCodeInfo? = nil
   }
 
   init() {}
 
   fileprivate var _error: String? = nil
+  fileprivate var _supportedFeatures: UInt64? = nil
 }
+
+#if swift(>=4.2)
+
+extension Google_Protobuf_Compiler_CodeGeneratorResponse.Feature: CaseIterable {
+  // Support synthesized by the compiler.
+}
+
+#endif  // swift(>=4.2)
 
 // MARK: - Code below here is support for the SwiftProtobuf runtime.
 
@@ -313,11 +373,14 @@ extension Google_Protobuf_Compiler_Version: SwiftProtobuf.Message, SwiftProtobuf
 
   mutating func decodeMessage<D: SwiftProtobuf.Decoder>(decoder: inout D) throws {
     while let fieldNumber = try decoder.nextFieldNumber() {
+      // The use of inline closures is to circumvent an issue where the compiler
+      // allocates stack space for every case branch when no optimizations are
+      // enabled. https://github.com/apple/swift-protobuf/issues/1034
       switch fieldNumber {
-      case 1: try decoder.decodeSingularInt32Field(value: &self._major)
-      case 2: try decoder.decodeSingularInt32Field(value: &self._minor)
-      case 3: try decoder.decodeSingularInt32Field(value: &self._patch)
-      case 4: try decoder.decodeSingularStringField(value: &self._suffix)
+      case 1: try { try decoder.decodeSingularInt32Field(value: &self._major) }()
+      case 2: try { try decoder.decodeSingularInt32Field(value: &self._minor) }()
+      case 3: try { try decoder.decodeSingularInt32Field(value: &self._patch) }()
+      case 4: try { try decoder.decodeSingularStringField(value: &self._suffix) }()
       default: break
       }
     }
@@ -365,11 +428,14 @@ extension Google_Protobuf_Compiler_CodeGeneratorRequest: SwiftProtobuf.Message, 
 
   mutating func decodeMessage<D: SwiftProtobuf.Decoder>(decoder: inout D) throws {
     while let fieldNumber = try decoder.nextFieldNumber() {
+      // The use of inline closures is to circumvent an issue where the compiler
+      // allocates stack space for every case branch when no optimizations are
+      // enabled. https://github.com/apple/swift-protobuf/issues/1034
       switch fieldNumber {
-      case 1: try decoder.decodeRepeatedStringField(value: &self.fileToGenerate)
-      case 2: try decoder.decodeSingularStringField(value: &self._parameter)
-      case 3: try decoder.decodeSingularMessageField(value: &self._compilerVersion)
-      case 15: try decoder.decodeRepeatedMessageField(value: &self.protoFile)
+      case 1: try { try decoder.decodeRepeatedStringField(value: &self.fileToGenerate) }()
+      case 2: try { try decoder.decodeSingularStringField(value: &self._parameter) }()
+      case 3: try { try decoder.decodeSingularMessageField(value: &self._compilerVersion) }()
+      case 15: try { try decoder.decodeRepeatedMessageField(value: &self.protoFile) }()
       default: break
       }
     }
@@ -405,14 +471,19 @@ extension Google_Protobuf_Compiler_CodeGeneratorResponse: SwiftProtobuf.Message,
   static let protoMessageName: String = _protobuf_package + ".CodeGeneratorResponse"
   static let _protobuf_nameMap: SwiftProtobuf._NameMap = [
     1: .same(proto: "error"),
+    2: .standard(proto: "supported_features"),
     15: .same(proto: "file"),
   ]
 
   mutating func decodeMessage<D: SwiftProtobuf.Decoder>(decoder: inout D) throws {
     while let fieldNumber = try decoder.nextFieldNumber() {
+      // The use of inline closures is to circumvent an issue where the compiler
+      // allocates stack space for every case branch when no optimizations are
+      // enabled. https://github.com/apple/swift-protobuf/issues/1034
       switch fieldNumber {
-      case 1: try decoder.decodeSingularStringField(value: &self._error)
-      case 15: try decoder.decodeRepeatedMessageField(value: &self.file)
+      case 1: try { try decoder.decodeSingularStringField(value: &self._error) }()
+      case 2: try { try decoder.decodeSingularUInt64Field(value: &self._supportedFeatures) }()
+      case 15: try { try decoder.decodeRepeatedMessageField(value: &self.file) }()
       default: break
       }
     }
@@ -422,6 +493,9 @@ extension Google_Protobuf_Compiler_CodeGeneratorResponse: SwiftProtobuf.Message,
     if let v = self._error {
       try visitor.visitSingularStringField(value: v, fieldNumber: 1)
     }
+    if let v = self._supportedFeatures {
+      try visitor.visitSingularUInt64Field(value: v, fieldNumber: 2)
+    }
     if !self.file.isEmpty {
       try visitor.visitRepeatedMessageField(value: self.file, fieldNumber: 15)
     }
@@ -430,10 +504,18 @@ extension Google_Protobuf_Compiler_CodeGeneratorResponse: SwiftProtobuf.Message,
 
   static func ==(lhs: Google_Protobuf_Compiler_CodeGeneratorResponse, rhs: Google_Protobuf_Compiler_CodeGeneratorResponse) -> Bool {
     if lhs._error != rhs._error {return false}
+    if lhs._supportedFeatures != rhs._supportedFeatures {return false}
     if lhs.file != rhs.file {return false}
     if lhs.unknownFields != rhs.unknownFields {return false}
     return true
   }
+}
+
+extension Google_Protobuf_Compiler_CodeGeneratorResponse.Feature: SwiftProtobuf._ProtoNameProviding {
+  static let _protobuf_nameMap: SwiftProtobuf._NameMap = [
+    0: .same(proto: "FEATURE_NONE"),
+    1: .same(proto: "FEATURE_PROTO3_OPTIONAL"),
+  ]
 }
 
 extension Google_Protobuf_Compiler_CodeGeneratorResponse.File: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementationBase, SwiftProtobuf._ProtoNameProviding {
@@ -442,14 +524,19 @@ extension Google_Protobuf_Compiler_CodeGeneratorResponse.File: SwiftProtobuf.Mes
     1: .same(proto: "name"),
     2: .standard(proto: "insertion_point"),
     15: .same(proto: "content"),
+    16: .standard(proto: "generated_code_info"),
   ]
 
   mutating func decodeMessage<D: SwiftProtobuf.Decoder>(decoder: inout D) throws {
     while let fieldNumber = try decoder.nextFieldNumber() {
+      // The use of inline closures is to circumvent an issue where the compiler
+      // allocates stack space for every case branch when no optimizations are
+      // enabled. https://github.com/apple/swift-protobuf/issues/1034
       switch fieldNumber {
-      case 1: try decoder.decodeSingularStringField(value: &self._name)
-      case 2: try decoder.decodeSingularStringField(value: &self._insertionPoint)
-      case 15: try decoder.decodeSingularStringField(value: &self._content)
+      case 1: try { try decoder.decodeSingularStringField(value: &self._name) }()
+      case 2: try { try decoder.decodeSingularStringField(value: &self._insertionPoint) }()
+      case 15: try { try decoder.decodeSingularStringField(value: &self._content) }()
+      case 16: try { try decoder.decodeSingularMessageField(value: &self._generatedCodeInfo) }()
       default: break
       }
     }
@@ -465,6 +552,9 @@ extension Google_Protobuf_Compiler_CodeGeneratorResponse.File: SwiftProtobuf.Mes
     if let v = self._content {
       try visitor.visitSingularStringField(value: v, fieldNumber: 15)
     }
+    if let v = self._generatedCodeInfo {
+      try visitor.visitSingularMessageField(value: v, fieldNumber: 16)
+    }
     try unknownFields.traverse(visitor: &visitor)
   }
 
@@ -472,6 +562,7 @@ extension Google_Protobuf_Compiler_CodeGeneratorResponse.File: SwiftProtobuf.Mes
     if lhs._name != rhs._name {return false}
     if lhs._insertionPoint != rhs._insertionPoint {return false}
     if lhs._content != rhs._content {return false}
+    if lhs._generatedCodeInfo != rhs._generatedCodeInfo {return false}
     if lhs.unknownFields != rhs.unknownFields {return false}
     return true
   }
