@@ -7,7 +7,7 @@ jobs:
   create-release:
     runs-on: macos-10.15
     env:
-        UPSTREAM_REPO: pointfreeco/swift-snapshot-testing
+        UPSTREAM_REPO: apple/swift-protobuf
 
     steps:
       - name: checkout
